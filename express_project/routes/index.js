@@ -1,13 +1,5 @@
 var express = require('express');
 var router = express.Router();
-
-const mysql = require('mysql');
-const dbConfig = require('../config/database')
-const connection = mysql.createConnection(dbConfig);
-
-//connection.connect();
-
-
 /**
  * @swagger
  * tags:
@@ -50,13 +42,11 @@ const connection = mysql.createConnection(dbConfig);
  */
 
 router.get('/todo', function(req,res,next){
-  var todo;
-  connection.query('SELECT content from Todo where _id = "first"', (err, rows, field) => {
-    if (err) throw err;
-    todo = rows;
-    res.send(todo);
-  })
-
+  var todo = {
+    _id : '4',
+    content : 'todo list'
+  };
+  res.send(todo);
 })
 
 
@@ -67,7 +57,4 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-
-
 module.exports = router;
-

@@ -11,7 +11,7 @@ const swaggerDefinition = require('./define/swaggerDefinition');
 const options = {
   swaggerDefinition,
   //이 apis 에 들어간 주석들을 분석한다고 하니, 여기에 주석을 따로 빼놓은 파일을 import하면 될 것 같다,
-  apis : ['./routes/index.js', './define/todoDefinition.js']
+  apis : ['./define/orderDefinition.js', './define/todoDefinition.js']
 };
 
 const swaggerSpec = swaggerJSDoc(options);

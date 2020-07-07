@@ -6,19 +6,12 @@ var logger = require('morgan');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
-const swaggerDefinition = {
-  info : {
-    title : "Auth Service",
-    version : '1.0.0',
-    description : 'Auth API'
-  },
-  host : 'localhost:3000',
-  basePath : '/'
-};
+const swaggerDefinition = require('./define/swaggerDefinition');
 
 const options = {
   swaggerDefinition,
-  apis : ['./routes/index.js']
+  //이 apis 에 들어간 주석들을 분석한다고 하니, 여기에 주석을 따로 빼놓은 파일을 import하면 될 것 같다,
+  apis : ['./routes/index.js', './define/todoDefinition.js']
 };
 
 const swaggerSpec = swaggerJSDoc(options);

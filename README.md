@@ -65,4 +65,6 @@
 > 분리한 후에 각각 error에 대해 처리를 할 수 있도록 Promise를 만들어 return 하고 async, await을 이용하였다.         
 > 처음에는 async, await, promise를 사용하지 않아서 db에서 결과가 제대로 가져오지 않았다.      
 > async, await, promise를 이용해서 해결을 할 수 있었고, try catch를 이용해 에러를 쉽게 처리할 수 있었다. 
+> 그리고 api에서 path parameter는 아무리 숫자를 입력해도 string으로 인식이 된다. 주의하자!             
+> db에서 가져온 결과가 아무것도 없는 경우에도 검증하는 함수를 따로 분리하여 검증하였다.    
 

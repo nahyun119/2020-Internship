@@ -49,3 +49,20 @@
 > 403으로 예외를 알려주고 어떤 에러인지 알 수 있도록 swagger를 통해 명시하였다.          
 
 ### 200713  pagination 구현
+> pagination은 limit, offset을 이용해서 하는 방법과 cursor based 방법이 있다.       
+> limit, offset을 이용해서 하면 다음 페이지를 넘어갔을 때, 이전 페이지에 있던 데이터가 중복해서 나오는 경우가 종종 존재한다.        
+> 그리고 실시간으로 글이 삭제되거나 추가된 경우를 대처할 수 없다는 단점이 존재한다.          
+> 하지만 cursor based pagination은 client에게 알려준 이전 페이지의 마지막 게시글의 id를 알고 이 id 이후의 데이터를 가져오면         
+> 데이터가 추가 및 삭제가 되어도 중복이 되지않고 데이터를 보여줄 수 있다.       
+> 따라서 cursor based pagination으로 진행하였다.      
+
+### 200714 pagination 기능 보완 & function으로 나누기
+> 전날 구현한 cursor based pagination을 보완하였다. 왜냐하면 pagination을 할 때, 마지막 페이지인 것을 알려주면 client에서 더 이상 query 요청을 하지 않아도 되기 때문에      
+> 효율적이다. 이를 위해서 전체 페이지 수, 남아있는 페이지 수, 현재 페이지를 알려주는 query를 구현하였다. 
+> 이 query는 api를 따로 날려서 진행하는 것이 아니라 이전에 list를 요청하는 query 안에서 내부적으로 진행할 수 있도록 구현을 하였다. 
+> 또한 api 코드에서 parameter를 검증하는 function은 나중에 사이즈가 커지면 한 function 안에서 다루기 힘들어서 parameter를 검증하는 function을 만들어 분리하였다.           
+> mysql query 같은 경우에도 한 function안에 두지 않고 querySelect, queryUpdate 라는 이름으로 function을 만들어 분리하였다.        
+> 분리한 후에 각각 error에 대해 처리를 할 수 있도록 Promise를 만들어 return 하고 async, await을 이용하였다.         
+> 처음에는 async, await, promise를 사용하지 않아서 db에서 결과가 제대로 가져오지 않았다.      
+> async, await, promise를 이용해서 해결을 할 수 있었고, try catch를 이용해 에러를 쉽게 처리할 수 있었다. 
+

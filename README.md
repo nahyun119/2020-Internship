@@ -86,5 +86,6 @@
 > event 게시글의 조회수를 산정하는 query를 작성하였다. 그냥 간단하게 상세 정보를 호출할 때마다 count를 증가시키는 방법이 있지만       
 > 더 정교한 방법을 사용하고 싶어서 사용자가 해당 event 게시글을 하루에 한번만 집계되도록 하였다.       
 > 같은 사용자가 같은 게시글을 당일에 2번을 봐도 1번만 조회수가 count 될 수 있도록 하였다.       
-> 사용자가 볼 때마다 log view table을 업데이트하는 procedure와 조회수를 count하는 procedure를 각각 따로 구성하였다.        
+> 사용자가 볼 때마다 log view table을 업데이트하는 procedure와 조회수를 count하는 procedure를 각각 따로 구성하였다. 
+> log_view table은 사용자가 볼 때마다 insert되지만 count는 distinct를 이용하여 중복을 제거하여 count 될 수 있도록 구성하였다.      
 > procedure를 사용하니까 query가 훨씬 간결해지는 것 같다.       

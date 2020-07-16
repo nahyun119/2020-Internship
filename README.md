@@ -68,3 +68,23 @@
 > 그리고 api에서 path parameter는 아무리 숫자를 입력해도 string으로 인식이 된다. 주의하자!             
 > db에서 가져온 결과가 아무것도 없는 경우에도 검증하는 함수를 따로 분리하여 검증하였다.    
 
+### 200715 rds mysql 이용 & query 함수 더 나누기
+> query나 parameter를 check하는 함수들은 api에서 공통적으로 사용이 될 수 있기 때문에 util이라는 폴더를 만들어서 그 안에 paramUtil, queryUtil 파일을 생성하였다.       
+> 이 각 util 파일에 parameter를 method에 맞게 가져오거나 있는지 없는지 check 하는 함수를 만들어서 util 파일 require만 해서 가져올 수 있도록 코드 구조를 변경하였다.     
+> query util의 경우 select해서 array로 오는 것과 객체 하나로 오는 것을 나눠서 함수를 작성하고, query에 필요한 parameter에 따라서 query 함수를 구성하였다.      
+> 이렇게 함으로써 더 간결하고 나중에 스케일이 커지는 경우, 기능 추가 및 보완을 더 용이하게 할 수 있다.         
+> 또한 로컬에서 사용한 데이터 베이스를 rds 에 올리기 위해 character set을 맞추었다.        
+> utf8이 유명하지만 이모티콘이 적용이 되지 않는다. 그래서 utf8mb4, utfmb4_general_ci를 이용한다.      
+
+### 200716 router 함수들 분리 & 조회수 업데이트 query 작성
+> 전 날에 util 폴더를 만들어서 query랑 parameter를 check 하는 함수를 나누어서 작성하였는데, 이를 사용하는 부분도 router.get function안에서 한번에 이루어지도록 하는 것이 아니라     
+> 이를 사용하는 것도 다른 함수로 나누어서 역할을 명확하게 하였다.      
+> router.get 이런 식으로 처리하는 main 함수는 query 결과나 다른 함수들을 호출하는 역할로 전체적인 기능이 무엇인지 바로 알 수 있도록 한다.       
+> checkparameter 함수는 request 객체와 paramsUtil 의 함수들을 통해 파라미터를 검증하는 역할을 한다.    
+> query함수는 검증된 파라미터를 이용하여 queryUtil에 있는 함수를 통해 원하는 데이터를 가져오거나 등록하는 역할을 한다.       
+> 이렇게 main안에서도 역할에 따라 함수를 나누어서 작성을 한다면 나중에 기능 추가나 보완이 더 잘 이루어질 것이다! 항상 스케일업을 고려하자!!!       
+> event 게시글의 조회수를 산정하는 query를 작성하였다. 그냥 간단하게 상세 정보를 호출할 때마다 count를 증가시키는 방법이 있지만       
+> 더 정교한 방법을 사용하고 싶어서 사용자가 해당 event 게시글을 하루에 한번만 집계되도록 하였다.       
+> 같은 사용자가 같은 게시글을 당일에 2번을 봐도 1번만 조회수가 count 될 수 있도록 하였다.       
+> 사용자가 볼 때마다 log view table을 업데이트하는 procedure와 조회수를 count하는 procedure를 각각 따로 구성하였다.        
+> procedure를 사용하니까 query가 훨씬 간결해지는 것 같다.       

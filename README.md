@@ -88,4 +88,27 @@
 > 같은 사용자가 같은 게시글을 당일에 2번을 봐도 1번만 조회수가 count 될 수 있도록 하였다.       
 > 사용자가 볼 때마다 log view table을 업데이트하는 procedure와 조회수를 count하는 procedure를 각각 따로 구성하였다. 
 > log_view table은 사용자가 볼 때마다 insert되지만 count는 distinct를 이용하여 중복을 제거하여 count 될 수 있도록 구성하였다.      
-> procedure를 사용하니까 query가 훨씬 간결해지는 것 같다.       
+> procedure를 사용하니까 query가 훨씬 간결해지는 것 같다.     
+
+### 200717 mysql aws에 deployment
+> WebStorm과 pem을 이용해서 aws에 코드를 배포하였다.                
+> github를 이용해서 진행하는 줄 알았지만, webstorm에서 자체적으로 도와주는 tool이 있었다.     
+> 그래서 보다 쉽게 deployment를 할 수 있었다.         
+> 또한 code를 또 가독성을 높이기 위해 분리하였다.    
+> query를 담당하는 부분이더라도 그 안에서 각 query에 대해 처리하는 함수를 각각 나누어서 코드를 작성하였다.      
+> 그렇게 하면 나중에 query를 추가하거나 수정하거나 삭제할 때 좀 더 용이하게 할 수 있다.     
+> 실제로도 코드를 나눌수록 보기도 편하고 그냥 봤을 때도 어떤 역할을 하는지 한눈에 볼 수 있었다.       
+> query를 처리하는 query util에서도 중복되는 query는 하나의 함수로해서 재사용성을 높였다.     
+> error를 처리하는 경우에도 error에 대한 응답을 errorutil이라는 파일을 만들어서 그 안에 함수로 작성하였다.        
+> error util을 만들어서 router 처리하는 부분과 query 부분에서 require을 통해 보다 간결하게 처리할 수 있었다.       
+
+### 200720 mysql connection pool
+> 현재 db를 사용하는 사람이 client와 server 개발자 뿐이지만 나중에 배포해서 사용자가 늘어난 경우 db connection을 처리해주어야한다.      
+> client connection이 많은 경우 connection이 이루어지지 않아서 query를 처리하기가 힘들 수 있다.      
+> 그래서 connection pool을 만들어서 pool 안에 connection을 생성하고 query를 할 때마다 pool에서 connection을 가져와서 사용하면 된다.      
+> 이 때 insert update delete와 같이 db에 대해 변경이 일어나는 경우, error 발생 시 데이터를 되돌리기 위해 rollback과 commit을 이용한다.     
+> error가 발생해서 데이터의 변경, 수정을 되돌리기 위해서 connection.rollback()을 사용한다.     
+> error가 발생하지 않고 수정사항에 대해 변경을 반영하기 위해서 connection.commit()을 사용한다.      
+> query를 모두 완료한 경우 connection.release를 통해 connection을 pool에 돌려줘야 한다.        
+> 만약 돌려주지 않는다면 connection pool을 사용하지 않는 것과 동일한 결과가 일어날 것 같다.    
+> 

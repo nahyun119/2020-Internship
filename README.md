@@ -124,3 +124,4 @@
 > release의 중요성!!!!!!!!!!!!!!!        
 > 그리고 release를 하고 계속 요청을 날렸을 때는 connection이 5개로 유지 되는 것을 볼 수 있었다.       
 > release를 통해 connection을 항상 적은 개수로 유지해야한다.         
+> 단일 connection이라면 connection.end()를 사용하지만, connection pool을 사용하는 경우에는 connection.release를 이용한다.   

@@ -111,4 +111,16 @@
 > error가 발생하지 않고 수정사항에 대해 변경을 반영하기 위해서 connection.commit()을 사용한다.      
 > query를 모두 완료한 경우 connection.release를 통해 connection을 pool에 돌려줘야 한다.        
 > 만약 돌려주지 않는다면 connection pool을 사용하지 않는 것과 동일한 결과가 일어날 것 같다.    
-> 
+
+### 200721 mysql connection pool 보완
+> mysql connection pool에서 release를 try catch finally를 통해 언제든지 실행해서 pool에 connection을 반환하도록 하였다.      
+> mysql connection pool에서 transaction을 실행하고 transaction이 일어나는 동안 에러가 발생하면 rollback을 통해 데이터를 삽입하거나 변경한 것을 되돌려놔야한다.      
+> 그래서 rollback을 사용해서 event 조회수를 update 하는 connection에서 에러를 발생시키고 데이터의 변화를 확인해보았다.       
+> error 발생 시 rollback 써서 데이터가 삽입되지 않는 것을 확인할 수 있었다.      
+> 또한 query가 에러없이 잘 이루어진다면 commit을 통해 데이터 변경이 일어나도록 하였다.      
+> 에러가 없는 경우 데이터베이스에 데이터가 잘 넣어지는 것을 확인할 수 있었다.        
+> 이렇게 commit과 rollback을 사용한다면 여러 명의 사용자가 데이터를 변경할 때 데이터가 꼬이지 않고 진행할 수 있을 것 같다.       
+> 그리고 connection pool에서 release를 하지 않고 계속 요청을 날려서 connection을 생성하면 connection이 줄어들지 않고 꽉 차 있어서 too many connections 라는 오류를 볼 수 있었다.          
+> release의 중요성!!!!!!!!!!!!!!!        
+> 그리고 release를 하고 계속 요청을 날렸을 때는 connection이 5개로 유지 되는 것을 볼 수 있었다.       
+> release를 통해 connection을 항상 적은 개수로 유지해야한다.         

@@ -130,3 +130,143 @@
 프로젝트 파일을 열지 않은 상태일 때, Default Settings - Build, Execution, Deployment - Deployment
 프로젝트 파일을 열어둔 상태일 때, Tools - Deployment - Configuration
 </pre>
+
+### 200803 유동적인 pagination 구현
+> 기존의 pagination은 한번에 10개씩 정해진 개수만큼 데이터를 가져와 client에 보내줬지만, 관리자 페이지에서 한 페이지 당 보여질 수 있는 데이터의 수를 조작할 수 있도록 구현하였기 때문에,    
+> app이나 관리자 페이지에서 사용자가 정한 개수만큼 데이터를 불러올 수 있도록 유동적인 pagination을 구현하였다.     
+> React 랑 서버랑 해서 사용자가 목록 테이블에서 자신이 한 페이지에서 보고싶은 데이터 수를 선택하면 그만큼 볼 수 있도록 정적인 pagination이 아닌 유동적인 pagination을 구현하였다.    
+> 정적으로 하면 그냥 10페이지 이런 식으로 보여주고 나중에 이슈가 생길 수 있지만 이렇게 하면 유동적이어서 이슈가 적을 것이다.       
+> 하지만 또 하다보니까 react 코드가 겹치는 부분이 많아서 나중에 정리를 해야할 것 같다.     
+
+### 200804 관리자 페이지 검색 기능 구현
+> React 관리자 페이지에서 항목에 맞게 검색을 하면 그 검색에 대해서 결과를 가져오는 작업을 함.     
+> 화면에 navbar를 이용해서 검색할 수 있는 bar를 만들고 그 위에서 검색 항목에 맞게 가게면 가게, 이벤트면 이벤트, 약품이면 약품 검색을 해서 데이터를 가져오도록 하였다.     
+> Mysql의 like 를 사용하면 해당 테이블의 열에 해당 문자열이 있는 데이터를 가져온다. 검색할 때 되게 유용한 query.    
+> 그리고 전화 입력하는 경우에도 format에 맞게 입력되고 보여질 수 있도록 구성하였다.     
+> 또한 광고를 보여주기 위해서 광고 이름과 광고 링크를 보내는 api를 만들고 swagger 작성하고 서버 요청 받는 부분 구현하였다.     
+> 광고의 경우 s3에 저장된 광고 이름을 app에 전송하면 되기 때문에 간단하게 구현을 할 수 있었다.     
+<pre>
+=> 한 기능을 구현할 때, db query 생성 -> 서버 쪽 swagger 작성 -> 서버 쪽 api 요청 받는 쪽 작성 -> 관리자 페이지 요청 전송 -> 관리자 페이지 ui 이런 식
+</pre>
+
+### 200805 전체 검색 기능 보완 & FCM 
+> React 상단에서 검색 바를 해당 항목  nav bar로 들어온 경우에 할 수 있도록 함.     
+> 검색 props undefined 문제가 발생하기도 하고 안하기도 한다…ㅠ     
+> 이미지 크기가 크면 앱에서 여러 개의 사진을 보여줄 때 버벅거리는 현상이 발생한다.     
+> 이를 막기 위해서 앱에서도 처리해주지만 서버 관리자 페이지에서도 이미지 올리면 1mb 이하만 올릴 수 있도록 설정하였다.      
+> 그리고 이미지 파일 이름 같은 경우 한글보다는 영어를 사용하자. 이미지를 app에서 보여줄 때 에러가 발생하였다.     
+> 또 검색할 때도 영어는 바로 되는데 한국어는 제대로 이루어지지 않음.    
+> fcm 간단하게 동작 구현. token을 이용해서 전송을 하면 여러명에게 전송할 때 제약이 있다.    
+> 여러명한테 전송하려면 반복문을 돌려서 여러번 보내거나 registration 이런 식으로 방법이 있는데, 한번에 1000명만 보내야한다는 제약사항이 존재한다.      
+> 그래서 topic을 사용한다. 안드로이드에서 해당 topic에 대해서 구독을 하고 서버에서 그 topic을  구독한 사람한테 전송을 할 수 있고, 이는 더 많은 사람들에게 효율적으로 전송을 할 수 있다.     
+
+### 200806 FCM 구현
+> notification은 백그라운드에서 알람 목록에 뜨게 된다. fcm에서 처리.    
+> 하지만 data가 넘어가지 않는다. 왜냐 onreceiveMessage가 콜백되지 않기 때문이다.      
+> 이와 달리 foreground인 경우 onreceivemessage가 콜백이 되서 data에 대해서 처리를 할 수 있다.      
+> 앱이 죽은 경우나 실행하지 않는 경우 백그라운드에 속하는데 이 때 notification이랑 data랑 같이 사용하면 알람이 정상적으로 이루어지지 않는다.        
+> 이와 달리 foreground인 경우 onreceivemessage가 콜백이 되서 data에 대해서 처리를 할 수 있다.      앱이 죽은 경우나 실행하지 않는 경우 백그라운드에 속하는데 이 때 notification이랑 data랑 같이 사용하면 알람이 정상적으로 이루어지지 않는다. 
+> 그래서 대부분 notification 이를 사용하지 않고 data만 사용한다.       
+> 그러면 앱이 실행되고 있어도, 프로세스가 중지되거나 아예 실행 안한 경우 모두 푸쉬 알람이 간다. 다만 강제종료한 경우는 제외      
+> 또한 메세지를 보낼 때 json 형태로 보내야하고, 우선순위도 high로 설정해야 바로 알림이 간다. 우선순위는 마음대로 조절을 할 수가 있다. 
+
+>  메세지 여러개 한번에 보내는 방법    
+<pre>
+// This registration token comes from the client FCM SDKs.
+var registrationToken = 'YOUR_REGISTRATION_TOKEN';
+
+var message = {
+  data: {
+    score: '850',
+    time: '2:45'
+  },
+  token: registrationToken
+};
+
+// Send a message to the device corresponding to the provided
+// registration token.
+admin.messaging().send(message)
+  .then((response) => {
+    // Response is a message ID string.
+    console.log('Successfully sent message:', response);
+  })
+  .catch((error) => {
+    console.log('Error sending message:', error);
+  });
+</pre>
+
+> 주제를 이용해서 메세지를 보내는 방법     
+<pre>
+// Define a condition which will send to devices which are subscribed
+// to either the Google stock or the tech industry topics.
+var condition = "'stock-GOOG' in topics || 'industry-tech' in topics";
+
+// See documentation on defining a message payload.
+var message = {
+  notification: {
+    title: '$GOOG up 1.43% on the day',
+    body: '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.'
+  },
+  condition: condition
+};
+
+// Send a message to devices subscribed to the combination of topics
+// specified by the provided condition.
+admin.messaging().send(message)
+  .then((response) => {
+    // Response is a message ID string.
+    console.log('Successfully sent message:', response);
+  })
+  .catch((error) => {
+    console.log('Error sending message:', error);
+  });
+</pre>
+
+> 주제는 최대 5개가 한계      
+> 주제에 맞게 fcm 해서 알람 보내는거 구현하였다.        
+> Node schedule을 사용해서 주기적으로 fcm 알람이 갈 수 있도록 구현하였다. -> 근데 이 aniple 프로젝트에서는 광고 푸시 알람만 전송하기 때문에 이 기능은 필요가 없을 것 같다! 
+> ==> 기획을 보고 알아채야 한다.      
+> 관리자 페이지 목록에서 필터 기능을 제외하고, store의 경우 모든 항목을 나열해서 한번에 검색을 할 수 있도록 sql에서 and로 이어도 like “%%” 라면 모든 내용이 검색이 된다.         
+> 또한 데이터 테이블 이름, 간격 수정하고, 병원은 병원끼리, 약국은 약국끼리 같은 범위에서 검색을 할 수 있도록 변경함. 그래서 페이지가 더 늘어났다.     
+> —> 다만 검색할 때 버벅거리는 문제가 있고 코드의 가독성을 높여야할 것 같다.     
+
+### 200806 뒤로가기 등 다양한 상황에서의 검색 기능 보완
+> 검색하고 나서 뒤로가기 하면 아무것도 데이터를 가져오지 못했는데, url의 search 즉, 쿼리를 이용해서 이를 parsing해서 검색 조건이 무엇인지 알아내고, url의 query가 바뀔 때마다 데이터를 업데이트 할 수 있도록 구현하였다.     
+> Sql procedure 들여쓰기를 이용해서 가독성을 조금이라도 높이는 것이 좋다.      
+> 이미지 크기 정해진게 아니라 반응형으로 수정하였다.     
+> React 관리자페이지 코드 중복되는거 약간씩 수정하여 가독성을 보다 높였다.      
+> 짜잘한거 수정함 . 시간 보여지는거나 그런거      
+> —> 흠 스러운거 : 병원 이런 것처럼 검색하는 부분이 아닌데 search bar가 있는게 나은지 아님 처리를 할지 , datatable 크기, mysql 시간 설정(한국 시간이 아님)    
+
+### 200810 관리자 페이지 데이터 테이블 수정 및 보완 & 푸시 알람 페이지 구현
+> 1. store 통일 시키기 (체크)   
+> 2. 관리자 페이지 로고 변경하기    
+> 3. 드롭다운으로 병원, 약국, 미용, 용품 이렇게 선택하면 이동할 수 있도록 한다. (체크)    
+> 4. Mysql 한국 시간으로 변경(체크)       
+> 5. 광고 푸시 보내기 (체크)      
+
+> 이벤트 목록, 생성/ 약품 목록, 생성이랑 통일성을 주기 위해서 store의 경우에도 목록과 생성만 있을 수 있도록 변경하였다.    
+> 그래서 기본 store 목록으로 들어가면 동물병원 목록이 먼저보이고 card header에서 병원, 약국, 미용, 용품을 select로 해서 선택하면 원하는 store type으로 이동할 수 있도록 구현하였다.     
+> 또한 관리자 페이지 로고를 변경하였고, 나중에 로고 색상 변경을 해야할 것 같다.     
+> 그리고 그 전에 mysql이 한국 시간이 아니라서 시간 정보가 제대로 되어있지 않았는데 한국 시간으로 변경하였다.       
+> 그리고 이제 관리자 페이지에서 사용자들에게 광고를 하거나 알람을 보내기 위해서 푸시 알람을 보낼 수 있도록 화면을 구현하였다.          
+> 푸시 알람 페이지를 가면 제목과 내용을 입력하고 입력한 내용을 서버에 보내서 푸시 알람을 보낼 수 있도록 구현을 하였다.        
+> aniple의 경우 특정 사용자가 존재하지 않아서 topic 하나로 푸시 알람을 보낼 수 있도록 구현을 하였다.       
+> 푸시 알림은 디비에 저장할 필요가 없다!
+
+### 200811 푸시 알람 페이지 보완 & 검색 bar 보완 & aws 배포
+> 1. 데이터 테이블이 아닌 경우 search bar가 안보이도록 한다.      
+> -> url를 읽어서 해당 url이 데이터 목록인지 아닌지를 구별하여 search bar를 보일지 말지를 결정하였다.       
+> 2. 로고 색깔 변경하기    
+> 3. 푸시 알람 작성할 때 글자수 1/140 이런 식으로 보일 수 있도록 수정      
+> -> input tag에 maxLength 속성을 이용하면 된다.      
+>   maxLength = “140” 이렇게 설정을 하면 140자로 입력이 제한된다. (공백포함)     
+> 4. 검색했을 때 검색 bar 보이게 하고 검색 결과 화면에서 동물 병원, 약국, 미용실, 용품점 select하면 검색 파라미터를 이용해서 각 store 풋종류에 맞게 검색하여 결과를 보여줄 수 있도록 구현       
+> -> 검색 화면에서 검색하고 나서 다른 store 종류를 보고자 할 때 select tag를 이용해서 선택할 수 있도록 하였다.        
+>   이 때 그냥 해당 store 타입 목록으로 이동하는 것이 아니라 검색 파라미터? 검색하고자 하는 내용을 이용해서 검색 결과 화면으로 이동할 수 있도록 구현하였다.         
+> 5. Aws 위에 관리자 페이지 배포를 함, pm2 를 이용해서 중단없이 실행할 수 있도록 구현      
+> -> react project를 pm2를 이용하여 작동을 시키려면 pm2 start —name “app name” — start 로 실행시키면 된다.        
+<pre> 
+pm2 start --name "app name" --start
+</pre>
+

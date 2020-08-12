@@ -288,7 +288,7 @@ pm2 start --name "app name" --start
 > 이 때 salt값이 사용이 되는데 이 salt 값은 crypto module의 randomBytes를 사용하여 랜덤으로 만들어버렸다. 그렇기 때문에 사용자마다 생성된 salt값은 db에 저장하여 알고 있어야한다.         
 
 > 로그인 인증 => react는 token을 저장하고 인증을 받도록 한다.       
-> 로그인 유지는 로그인을 하고 나서  express 서버에서 로그인 성공시 발급 받은 token을  localstorage에 저장을 하고, 로그인 성공 여부에 대해서도 localstorage에 저장한다.
+> 로그인 유지는 로그인을 하고 나서  express 서버에서 로그인 성공시 발급 받은 token을  localstorage에 저장을 하고, 로그인 성공 여부에 대해서도 localstorage에 저장한다.         
 https://github.com/coreui/coreui-free-react-admin-template/issues/113              
 > 이후에 router들을 렌더링 할 때          
 > 로그인이 필요한 AuthenticationedRoute와 로그인이 필요하지 않은 UnauthenticatedRoute를 만들어서, localstorage에 token이 존재하고 login이 성공이라면 인증이 된 것이므로 authenticated route를 렌더링해서 보여줄 수 있다.         

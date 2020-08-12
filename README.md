@@ -289,7 +289,7 @@ pm2 start --name "app name" --start
 
 > 로그인 인증 => react는 token을 저장하고 인증을 받도록 한다.       
 > 로그인 유지는 로그인을 하고 나서  express 서버에서 로그인 성공시 발급 받은 token을  localstorage에 저장을 하고, 로그인 성공 여부에 대해서도 localstorage에 저장한다.
-https://github.com/coreui/coreui-free-react-admin-template/issues/113
+https://github.com/coreui/coreui-free-react-admin-template/issues/113              
 > 이후에 router들을 렌더링 할 때          
 > 로그인이 필요한 AuthenticationedRoute와 로그인이 필요하지 않은 UnauthenticatedRoute를 만들어서, localstorage에 token이 존재하고 login이 성공이라면 인증이 된 것이므로 authenticated route를 렌더링해서 보여줄 수 있다.         
 > 로그인 페이지의 경우 인증이 필요하지 않은 route이기 때문에 unauthenticatedRoute로 설정한다. 하지만 뭔가 굳이 Unauthenticated로 굳이 할 필요는 없어보인다.             

@@ -300,3 +300,74 @@ https://github.com/coreui/coreui-free-react-admin-template/issues/113
 > 검증을 했는데 만약 만료된 토큰이라면 react에서 만료된 사실을 알고 로컬 스토리지의 로그인 여부를 실패로하고 토큰을 지워야한다. 로그아웃      
 > Theheader에 사용자 이름이랑 로그아웃 버튼 만들기       
 
+### 200813
+> 1. 요청할 때 token 해서 jwt 만료됐는지 아닌지 확인하기(서버).   
+> 2. 로그아웃 버튼 만들고 , 사용자 아이디 띄우기 (체크).   
+> 3. 로그아웃 기능 만들기 (체크).      
+> 4. 병원 정보 db에 넣기 (체크).    
+
+> 출처 : https://pro-self-studier.tistory.com/50?category=658753.    
+
+
+#### Redux 사용순서
+![image](https://user-images.githubusercontent.com/52439497/90316681-a9fbe900-df5e-11ea-894d-c02e240cf3c4.png)
+
+
+> 여러가지를 한번에 import하는 방법       
+![image](https://user-images.githubusercontent.com/52439497/90316692-cc8e0200-df5e-11ea-970f-40a53ba8b09e.png)
+
+
+> redux에서 데이터를 가져오는 방법      
+> => dispatch를 이용해서 action을 실행하여 state에 데이터를 저장한다.         
+> 이 때 함수형 컴포넌트라면 useDispatch를 이용해서 dispatch를 선언하고나서 사용할 수 있다.         
+> dispatch를 이용해서 state에 데이터를 저장하고, useSelector를 이용해서 state에 있는 데이터들을 가져올 수 있다.       
+> 이 때 여러 action?에 대해서 action을 감지하는 reducer가 여러개가 선언이 될 수 있는데,          
+> 이 때 reducer가 여러개라면 combineReducer를 사용하여 reducer를 하나로 합치고 createStore를 통해 store를 만들어 사용할 수 있다.          
+> https://velog.io/@eomttt/Redux-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0-%ED%95%A8%EC%88%98%ED%98%95-Class-%ED%98%95           
+> -> 함수형 컴포넌트를 사용한 경우 참조       
+
+> 대신 state의 경우에는 데이터가 새로고침하면 사라진다. 그래서 유저정보를 localstorage에 저장.      
+> 상단에 보이는 유저 정보들은 로그인 시에 로컬스토리지에 저장을 하고, 로그아웃을 하면 로컬스토리지에서 삭제를 한다.         
+
+> 요청을 보낼 때마다 권한이 있는지 없는지 확인하기 위해서 서버 쪽에서는 authenticate util에 jwt를 검증하는 authenticate function을 정의하고,       
+> 정의한 함수를 라우터에 요청이 들어오자마자 실행하여 권한을 확인하도록 구현하였다.         
+> —> <이슈> 인터셉터 역할 => 근데 모든 api에 일일이 하지 않고 그냥 /admin으로 오는 요청을 한번에 처리할 수 없을까..         
+> 그리고 권한 인증이 되면 서버에서는  authentication이라는 이름으로  header를 설정한다. 인증이 되면 true, 인증이 되지 않으면 false로 설정하였다.           
+> 이 때 중요한 점은 client에서 서버의 custom header에 접근하기 위해          
+<pre>
+const corsOptions = {
+  exposedHeaders: 'authentication',
+};
+app.use(cors(corsOptions));
+</pre>
+
+> 이런 식으로 cors를 설정해야한다.  그러면 client에서 custom header에 접근할 수 있다.        
+
+> 그리고나서 클라이언트 쪽에서는 모든 api 응답에서 header를 확인하고 authentication이 참인지 거짓인지를 판단하여 권한에 대해서 판단을 한다.          
+> 만약 권한이 없다면 (토큰이 만료되는 등) 다시 로그인하라고 alert를 통해 알려주고 localstorage의 내용을 다 지우고 로그인 페이지로 이동하도록 하였다.         
+
+> —> 다음 할일 : 토큰 만료에 대해서 처리 이 부분은 뭔가 에러가 계속난다…ㅠ, 그리고 용품이 카페로 변경이 되었으니 용어는 웬만하면 고쳐라, 거리 알려줄 때 파라미터로 거리 입력받으면 그만큼 받아오도록 처리할 수 있도록       
+
+### 200814
+> 1. 토큰 만료에 대해서 처리(체크)      
+> 2. 거리에 대해 파라미터를 알려주면 파라미터 받아서 처리할 수 있도록(체크)         
+> 3. 용품 -> 카페 로 용어 고치기        
+> 4. 로그인 버그 발견 -> 비밀번호가 틀린데도 로그인 성공이 된다.  (버그 수정)        
+> 5. 로그아웃 버튼,  user 정보 반응형        
+
+> -> 토큰 만료가 되면 토큰 만료 에러를 클라이언트에서 던져서 해당 에러에 대해서 처리할 수 있도록 한다.           
+> 로컬 스토리지에 있는 정보를 삭제를 하고 로그인 페이지로 이동할 수 있도록 구현하였다.         
+> 그리고 로그인 시 crypto모듈이 비동기적으로 진행이 되어서 promise로 만들어서 비동기식으로 고쳐서 결과가 제대로 도출되고 진행될 수 있도록 구현하였다.        
+
+> —> 다음 할일 : 용품점이름을 카페로 모두 수정, 로그아웃, user 정보 반응형으로 고치기, 홈으로 가면 sidebar가 클릭된 것처럼 보이게 해야한다.         
+> -> 로그아웃, 유저 정보 반응형으로 고치기        
+> ==> react-responsive 를 이용해서 MediaQuery를 이용해서 max - width, min - width를 이용해서 max width랑 min width를 정해서 해당 width 이상이거나 이하이면 다르게 보이도록 반응형으로 구현            
+> -> 용품점 모두 카페로 변경, method 같은 경우도 변경함.      
+
+##### aniple project 마무리 
+
+
+
+
+
+

@@ -367,6 +367,46 @@ app.use(cors(corsOptions));
 ##### aniple project 마무리 
 
 
+### 200818 자잘한 부분 수정
+> 1. 개인정보처리방침 html 서버에 올리기     
+> => html 을 올리려면 웹 서버가 필요한데 express 웹서버에 html을 올려서 사용함     
+> Cmd option l 해서 코드 정렬 ! 그리고 코드 잘 보자!       
+> <이슈>     
+> 또한 express에서 public에 html 파일 올리고       
+<pre>
+app.use('/static',express.static(path.join(__dirname, 'public')));
+</pre>
+
+> 이렇게 하면 주소:3000/static/파일명 이렇게 접근할 수 있다.       
+
+> Html 올리는 것을 어렵게 생각하지말자!        
+> 2. 사이드 바에서 새로고침하면 선택된거 보이게 하는거…       
+> => 브랜드 아이콘 누르면 새로고침해서 사이드바 보이도록 수정함        
+> 근데 redirect인 경우는 수정하지 않음ㅠㅠㅠ      
+> 1. UI 부분 자잘한거 수정         
+> 2. 이미지 로드시 이미지가 없는 경우 에러 이미지를 보여줄 때        
+<pre>
+onError={(e) => {
+  e.target.onerror = null;
+  e.target.src = errorImg;
+}
+</pre>
+> 이렇게 하면 된다.      
+<pre>
+<img alt ="동물 병원 이미지" src={`https://aniple.s3.ap-northeast-2.amazonaws.com/store/${item.image_name}`}
+     onError={(e) => {
+       e.target.onerror = null;
+       e.target.src = errorImg;
+     }}
+     style={{
+       width: "auto",
+       height: "auto",
+       maxHeight: "600px",
+       maxWidth: "100%"
+     }}/>
+</pre>
+> img 태그에 onError 이벤트에 대해서 처리하도록 하고, 이벤트가 발생한 이미지에 대해서 src를 수정해서 에러이미지를 보이도록 하였다.      
+
 
 
 

@@ -409,5 +409,161 @@ onError={(e) => {
 
 
 
+### 200820 새 프로젝트 준비(WebStorm deployment시 sftp 에러 발생 -> aniple이 아니라 다른 key도 에러가 난다.)
+> Ubuntu ec2설정에서 sftp 연결에 오류가 발생하였다.      
+> 왜 연결이 안되는지 잘 모르겠다..      
+> Filezila 이용해서 업로드하면 잘 반영되는 것 같은데..      
+> —> 이슈 발생한 것 같다. ec2를 재부팅하니까 sftp 프로토콜을 연결할 수 없다는 에러가 발생하였다.            
+<pre> 
+Unknown scheme in uri sftp error  
+</pre>
+> Datagrip 사용할 때, table 우클릭하고 jump to query console 하면 query 쓰고 실행할 수 있다.      
+> ec2에서 node 설치하는 방법      
+<pre>
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+> sudo apt-get install -y nodejs
+</pre>
+> 보안그룹 생성 시 port => http, https , ssh, mysql 위치무관으로    
+> aws ec2, RDS, S3를 세팅하고, datagrip을 이용해서 dump 진행       
+
+
+### 200821 DoItPower 서버 검토 및 준비
+> dotenv -> aws access key 나 비밀번호 계정 정보 등 팀원끼리 공유하지만 외부에 새어나가면 안되는 데이터를 .env 파일로 해서 보안해주면서 저장하는 도구        
+> Npm install로 설치하면 될 것 같다.       
+> Api 응답, 에러 처리할 때       
+![image](https://user-images.githubusercontent.com/52439497/90869453-32e9a900-e3d3-11ea-810d-11061a1ce6ed.png)
+> 이런 식으로 처리하면 좋을 것 같다. -팀장님 소스 참고     
+
+##### <정리>
+> 1. Error        
+> 에러 발생 시 생성되는 error code를 따로 빼서 정리하는게 좋을 것 같다. Err code  파일을 따로 만들어서 module.export하면 될 것 같다.       
+> error.stack -> 에러 발생 시 추적 정보를 담고 있다.         
+> Error Util은 에러가 발생하면 가져오고, 에러를 초기화 하는 코드, 특정 상황에 대한 에러를 에러 메세지를 포함하여 생성할 때 필요한 코드, 마지막으로 throw error해서 에러를 던진다.   
+
+> 2. hashUtil        
+> 비밀번호 잃어버렸을 시에 랜덤으로 비밀번호 만드는 코드 !!!         
+> Crypto 이용해서 진행하면 된다. randomBytes이용      
+
+> 3. Mysql         
+> 개발할 때 테스트 서버랑 실제 운영 서버를 다르게 해서 유지한다.        
+> -> 사용자의 아이피를 가져와서 아이피가 실제 운영하는 아이피 주소인지 아닌지를 확인하여 실제 서버인지 아닌지 체크해준다.      
+
+<pre>
+query: async function (db_connection, query, params, resultCallback) {
+    // console.log('query arguments.callee.caller : '+arguments.callee.caller.caller);
+    if( !cf.isRealServer ){
+        // console.log(`db_connection.state: ${db_connection.state}`);
+    }
+    if (db_connection && db_connection.state !== 'disconnected') {
+        await db_connection.query(
+            query,
+            params,
+            async function (err, rows, fields) {
+                // try {
+                if (err) {
+                    // console.log(`==>>>>>>>>> err: ${err.message}`);
+                    await resultCallback(null, errUtil.initError(errCode.system, err.message, err.stack));
+                    // errorHandler( throwUtil.initError(errCode.system, err.stack) );
+                    // throw err;
+                } else {
+                    // console.log('[INFO] ==================================');
+                    // console.log('[INFO] fields : '+JSON.stringify(fields));
+                    // if (resultCallback) {
+                    await resultCallback(rows, null);
+                    // }
+                }
+            });
+    }
+</pre>
+
+> 이렇게 해서 굳이 파라미터 수로 함수를 나눌 필요 없다.       
+> 또한 connection pool을 사용하는 경우,     
+> Try, catch 를 이용해서 진행하는데 getConnection할 때       
+<pre>
+connectPool: function(asyncFunc, errorHandler){
+    pool.getConnection(async function (err, connection) {
+        try {
+            if (err) {
+                await errorHandler( errUtil.initError(errCode.system, err.message, err.stack) );
+            } else {
+                await connection.beginTransaction(); // 트랜잭션 적용 시작
+                await asyncFunc(connection);
+                await connection.commit(); // 커밋
+            }
+        } catch ( e ) {
+            connection.rollback();
+
+            console.log(`[${moment()}] Error connectPool start ==================================`);
+            console.log(`[${moment()}] Error connectPool instanceof Error: ${(e instanceof Error)}`);
+            console.log(`[${moment()}] Error connectPool e: ${e}`);
+            console.log(`[${moment()}] Error connectPool e.message: ${e.message}`);
+            let _stack = (e instanceof Error) ? '' : (e.stack ? e.stack : e);
+            let _msg = (e instanceof Error) ? e.message : e;
+            let _code = (e instanceof Error) ? e.code : errCode.system;
+
+            let _err = (e instanceof Error) ? e : errUtil.initError(_code, _msg, _stack);
+            // console.log(`[${moment()}] Error connectPool e: ${JSON.stringify(e)}`);
+            // console.log(`[${moment()}] Error connectPool stack: ${e.stack}`);
+            console.log(`[${moment()}] Error connectPool _err: ${JSON.stringify(_err)}`);
+            console.log(`[${moment()}] Error connectPool end ==================================`);
+            await errorHandler( _err );
+            // sendUtil.sendErrorPacket()
+            // throwUtil.call(_err.code, _err.message);
+        } finally {
+            console.log(`======>>>> connection.state(${connection.state})`);
+            if( connection.state !== 'disconnected' ){
+                console.log(`======>>>> connection release`);
+                connection.release();
+            }
+        }
+    });
+},
+</pre>
+> 이렇게 구현하고 asyncFunc을 내가 mysql을 connect해서 진행할 기능을 넣으면 된다.      
+
+> 4. nodeMailer       
+> 이 모듈을 이용해서 사용자에게 메일을 보낼 수 있다.       
+
+> 5. sendUtil         
+> Sendutil 을 따로 만들어서 메일을 보내든, 서버에 에러를 보내든 보내는 부분에 대한 기능을 따로 빼서 진행     
+
+> 6.  로그인  
+![image](https://user-images.githubusercontent.com/52439497/90869768-a8557980-e3d3-11ea-9ff5-df45f81f59e0.png)
+
+> 이런 식으로 로그인 사용자만 접근할 수 있는 api와 누구나 접근할 수 있는 api를 나누어서 api를 구성하는 것이 좋다.       
+> 그래서 private인 api는 중간에 middleware를 설정해서 사용자를 확인할 수 있도록 한다.       
+> app.all(‘/~ 이 부분에서 로그인을 확인할 수 있는 middleware를 설정한다.        
+
+##### <팁>
+> 1.  사용자가 사용하다가 버그가 발생하면 어떤 운영체제에서, 어떤 앱 버전에서 발생했는지 알아야 쉽게 버그를 고칠 수 있기때문에 user table에 app버전이랑 os를 표시하는 column을 추가하는 것이 좋다.        
+> 그리고 로그인 할 때마다 혹은 회원가입 할 때 사용자의 os와 앱 버전을 새로 수정하는 것이 좋다.        
+
+> 2. nodemailer를 이용해서 서버에서 메일을 사용자에게 전송을 할 수 있는데, 이 때 에러가 발생한다.           
+> 대부분 에러는 보안 이슈 때문인데, 보내고자 하는 메일의 보안을 낮추면 메일을 서버에서 대신 전송할 수 있다.         
+
+> 3. 중요한 api를 전송하거나 그런 경우는 log를 따로 기록해놓는 것이 좋다.      
+
+> 4. Update 하는 procedure에서       
+> Update 를 시작하기 전에 set sql_safe_updates = 0; 이 명령어를 진행해서 safe update mode를 끄는 것이 좋다.        
+> 그리고 update를 다하면 set sql_safe_updates = 1; 를 해서 원상복구 해야한다.        
+> 5. Table 간 join! Inner join과 outer join이 존재한다.         
+> 여기서는 내가 참여하는 contest 목록을 가져올 때 contest member 테이블이랑 contest team 테이블과 각각 join해서 내 uid랑 맞는 contest를 가져온다.         
+
+> 6. Mysql ifnull(값, 대체할 값)         
+
+> 7. AWS S3에 사진을 올릴 때, 해당 파일의 mimetype.startWith 를 이용해서              
+> 이미지라면 ‘image/‘로 시작하는지, ‘audio/’ 이런 식으로 시작하는지를 통해 파일 유형을 알아낼 수 있다. => fileFilter 로 해서 multerOptions을 만들고 거기에 넣을 수 있다.       
+
+![image](https://user-images.githubusercontent.com/52439497/90870008-f8ccd700-e3d3-11ea-8b66-c757051e7b89.png)
+
+> 8. Node에서 이미지 처리에 sharp 모듈이 유명           
+> -> 이미지 resize, 확장, 이미지 추출, 이미지 처리 등 이미지를 사용할 때 유용한 라이브러리이다.            
+> 특히 한 이미지에 대해서 썸네일 사진이 필요한 경우,  원본 이미지를 resize 시켜서 따로 섬네일 사진을 만드는 것이 좋다.        
+
+
+
+
+
+
 
 

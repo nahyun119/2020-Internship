@@ -578,6 +578,90 @@ connectPool: function(asyncFunc, errorHandler){
 > 또한 서버와 디비 측 오류를 수정하였다..          
 
 
+### 200825 대회 경우의 수 파악하고 상세 정보 및 참여 현황 db query 작성
+> 1. Contest 상태 보여주는거 마저 완성 하기 (완료)         
+> 참여하고나서 인원 미달인 경우 와 인원이 다 찬 경우 경우의 수 추가        
+> 2. 우승 예상 상금 계산하는 로직 구현하기            
+> -> 참여 전인 경우와 참여 후인 경우 나누어서 우승 예상 상금을 구현한다.            
+> -> 상금 수령자의 총 참여금이랑 수수료 제외한 총 금액               
+> -> 참여하고나서 참여 인원 모집중일때는 참여인원미달로 우승예상금액을 표시하지 않음             
+> -> 상위 30%를 계산해야한다. (완료), 참여 현황 계산 완료                  
+> 3.  참여 현황 확인하기        
+
+> Q2. 상금 수령자는 결국 참여자?        
+> -> no, 상금 수령자는 총 상위 30%인 사람들을 의미하며 상금 수령자의 총 참여금은 상위 30%인 사람들의 참여금을 합한 값이고,(전체 인원의 30%인 사람들)            
+> 수수료 제외한 총 금액은 원래 total 값에서 0.7을 곱하면 된다.(상금 수령자와 상관없이)           
+> Q3. 인증이 한 번밖에 안된 경우는 이전과 차이를 모르니까,,, 상위 등급을 어떻게 따질 수 있을까..? 인증횟수라면 상관이 없지만               
+
+##### <팁>     
+> 1. join해서 order by 하는 것보단 join하는 테이블을 먼저 order by한 후에 join을 하는 것이 성능이 더 좋다!            
+> 2. Select 문에서 변수에 값을 대입하고 싶을 때, 
+<pre>
+select fitness_reward_rate, fee_rate into fitness_rate, fee_rate from tbl_contest where uid = in_contest_uid;     
+</pre>
+> 이렇게 해야한다.            
+> Select fitness_reward_rate into fitness_rate, fee_rate into fee_rate 이런 식으로 하면 mysql 1415 에러 발생한다.            
+
+> 상위 30%를 알기 위해서 제일 처음에 한 인증 데이터와 제일 최근에 한 인증 데이터를 가져와서 각 value의 차이를 계산하는 procedure           
+
+> —> 애매한 부분 : tbl_certify인데 여기서 굳이 max 데이터랑 min 데이터를 join을 할 필요가 있는가          
+<pre>
+CREATE DEFINER=`admin`@`%` PROCEDURE `select_calculate_grade_not_count`(
+	IN in_contest_uid int
+)
+BEGIN
+	select _certify.*
+		, if(_max.user_uid = _min.user_uid, _max.value - _min.value, NULL) as difference
+        from tbl_certify as _certify
+			/* 해당 대회에서 user uid 마다 제일 처음 인증한 데이터 가져오기*/
+			left join (select * from tbl_certify
+							where uid in (
+							select distinct MAX(uid) 
+								from tbl_certify 
+                                group by user_uid
+							) order by user_uid DESC ) as _max
+            on _max.contest_uid = in_contest_uid
+            /* 해당 대회에서 user uid 마다 제일 최근에 인증한 데이터 가져오기*/
+            left join (select * from tbl_certify as _min
+							where uid in (
+							select distinct MIN(uid) 
+								from tbl_certify 
+								group by user_uid
+							) order by user_uid DESC) as _min
+            on _min.contest_uid = in_contest_uid          
+		where _certify.contest_uid = in_contest_uid
+			/* 최대, 최소 user uid가 같은 경우만 갖고오기 안그러면 다른 데이터들도 가져온다.*/
+			and _max.user_uid = _min.user_uid
+            /* 해당 user uid랑 max 또는 min user uid가 같은 경우만 갖고오기 안그러면 다른 경우 데이터들도 가져온다 */
+            and _certify.user_uid = _max.user_uid;
+END
+</pre>
+
+
+##### <다음 할일>
+> - 참여 현황을 구하기 위해서 contest victory type이 up, down,  count인 경우에 대해서 각각 참여 현황을 구하는 query 작성, 그리고 이 참여 현황을 구하는 query에서 상위 30%의 사람들의 참여금을 다 더해서 구해야할 것 같다.            
+> - 팀별로 참여 현황과 상위 30% 어떻게 계산할지 query 구현              
+> -  user마다 등급도 부여해야한다! -> 비율 설정 필요           
+
+### 200826 참여 현황 정보 확인 & 참여 현황 상세 정보 DB QUERY
+> 1. 사용자 별 등급을 부여한다.(완료)          
+> 2. 개인전, 팀전 나누지 않고 참여 현황을 알 수 있는 db query 작성 완료.         
+> 3. 화면이 바뀔 때 마다 api를 새로만들면 된다.!!!!!! (참여 현황 구하는 api 완료)          
+> 4. 개인전이랑 팀전이랑 나눠서 생각하지말자. 하나의 db query와 api를 이용해서 만들어보자.           
+> 5. 파라미터는 최소로 간단하게 하면 된다. 참여 현황의 경우도 contest uid를 이용해서 진행할 수 있도록 한다.          
+
+> dense_rank -> 중복 되는 데이터의 랭킹을 동일하게 생각하여 랭킹을 계산하는 mysql 함수        
+> Over -> order by 랑 group by를 더 효과적으로 진행할 수 있도록 도와주는 mysql 함수          
+> DB 쿼리는 최대한 간단하고 최대한 합칠 수 있으면 합쳐서 같이 사용하는 것이 좋다.          
+
+> 대회 참여 현황을 알아볼 때 사용자가 참여한 경우, 사용자가 대회에 참여한 경우에만 참여 현황을 볼 수 있기 때문에 private 경로로 구현하였다.         
+> 또한 각 대회의 victory_type에 따라 참여한 사람들의 등급을 계산하는 방법이 다르기 때문에        
+> 대회 uid를 이용해서 대회의 victory type을 알고 각 victory type에 따라 procedure를 달리 실행하는 procedure를 하나 새로 만들었다.            
+> 그리고 참여 현황을 보여줄 때 사용자 이름을 보여줘야 하는데  이렇게 하려면 team, member, user 이렇게 테이블을 타고 들어가야한다.            
+> 그래서 테이블 사이에 join을 해서 팀의 멤버를 파악하고 멤버들의  user uid를 통해 user 테이블에서 닉네임을 가져오면 된다. (완료)          
+—> 정리 필요 !
+
+
 
 
 

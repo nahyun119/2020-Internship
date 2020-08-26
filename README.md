@@ -561,6 +561,21 @@ connectPool: function(asyncFunc, errorHandler){
 > 특히 한 이미지에 대해서 썸네일 사진이 필요한 경우,  원본 이미지를 resize 시켜서 따로 섬네일 사진을 만드는 것이 좋다.        
 
 
+### 200824 DoItPower contest api 구현 시작
+> Contest 상세 페이지 가져올 때, db procedure를 보완하였다.         
+> contest_detail 작성      
+
+![image](https://user-images.githubusercontent.com/52439497/91280802-3f4e7700-e7c2-11ea-8bfc-1bb8a6d4325c.png)
+> Left join은 left outer join을 의미하는 것과 같다.       
+
+![image](https://user-images.githubusercontent.com/52439497/91280904-67d67100-e7c2-11ea-9b4b-9d3b70df45f0.png)
+> 이런 식으로 join의 결과가 등장한다.       
+
+![image](https://user-images.githubusercontent.com/52439497/91280981-80df2200-e7c2-11ea-8591-f457b40daf4d.png)
+> 여러 개의 테이블에 대해서 join을 여러개 하고자 한다면, 이렇게 진행하면 된다.          
+> Contest  상세페이지에서 보여줄 상태를 보여주기 위해 db procedure이 아닌 db function을 만들어 구현해보았다.         
+> 또한 function을 만들때 다른 테이블에서 정보를 가져와야 하기 때문에  join에 대해 공부하고 구현해보았다.             
+> 또한 서버와 디비 측 오류를 수정하였다..          
 
 
 

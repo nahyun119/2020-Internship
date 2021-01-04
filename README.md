@@ -4,49 +4,49 @@
 ## Aniple
 
 #### 스플래쉬 화면
-![image](https://user-images.githubusercontent.com/52439497/103531601-09867100-4ecd-11eb-8367-2c4724c17847.png)
+![image](https://user-images.githubusercontent.com/52439497/103531601-09867100-4ecd-11eb-8367-2c4724c17847.png){: width="542" height="877.5"}
 
 #### 메인 화면
-![image](https://user-images.githubusercontent.com/52439497/103531619-13a86f80-4ecd-11eb-91c8-87b61647494a.png)
+![image](https://user-images.githubusercontent.com/52439497/103531619-13a86f80-4ecd-11eb-91c8-87b61647494a.png){: width="542" height="877.5"}
 
 #### 메뉴
-![image](https://user-images.githubusercontent.com/52439497/103531638-1acf7d80-4ecd-11eb-944b-ed8b0c983952.png)
+![image](https://user-images.githubusercontent.com/52439497/103531638-1acf7d80-4ecd-11eb-944b-ed8b0c983952.png){: width="542" height="877.5"}
 
 #### 지도 페이지(병원)
-![image](https://user-images.githubusercontent.com/52439497/103531631-17d48d00-4ecd-11eb-8eca-ad0921528e09.png)
+![image](https://user-images.githubusercontent.com/52439497/103531631-17d48d00-4ecd-11eb-8eca-ad0921528e09.png){: width="542" height="877.5"}
 
 #### 지도 페이지(약국)
-![image](https://user-images.githubusercontent.com/52439497/103531657-24f17c00-4ecd-11eb-974e-385743cf3ce1.png)
+![image](https://user-images.githubusercontent.com/52439497/103531657-24f17c00-4ecd-11eb-974e-385743cf3ce1.png){: width="542" height="877.5"}
 
 #### 지도 페이지(미용가게)
-![image](https://user-images.githubusercontent.com/52439497/103531657-24f17c00-4ecd-11eb-974e-385743cf3ce1.png)
+![image](https://user-images.githubusercontent.com/52439497/103531657-24f17c00-4ecd-11eb-974e-385743cf3ce1.png){: width="542" height="877.5"}
 
 #### 지도 페이지(용품 -> 카페로 변경)
-![image](https://user-images.githubusercontent.com/52439497/103531675-3044a780-4ecd-11eb-8766-f73e4d1f5039.png)
+![image](https://user-images.githubusercontent.com/52439497/103531675-3044a780-4ecd-11eb-8766-f73e4d1f5039.png){: width="542" height="877.5"}
 
 #### 병원 상세 페이지
-![image](https://user-images.githubusercontent.com/52439497/103531715-40f51d80-4ecd-11eb-87b1-2d0987180ed6.png)
+![image](https://user-images.githubusercontent.com/52439497/103531715-40f51d80-4ecd-11eb-87b1-2d0987180ed6.png){: width="542" height="877.5"}
 
 #### 약국 상세 페이지
-![image](https://user-images.githubusercontent.com/52439497/103531696-389ce280-4ecd-11eb-92b9-9a1946c55e61.png)
+![image](https://user-images.githubusercontent.com/52439497/103531696-389ce280-4ecd-11eb-92b9-9a1946c55e61.png){: width="542" height="877.5"}
 
 #### store 리스트 페이지
-![image](https://user-images.githubusercontent.com/52439497/103531757-523e2a00-4ecd-11eb-9d26-4ce111735d13.png)
+![image](https://user-images.githubusercontent.com/52439497/103531757-523e2a00-4ecd-11eb-9d26-4ce111735d13.png){: width="542" height="877.5"}
 
 #### 이벤트 목록 페이지
-![image](https://user-images.githubusercontent.com/52439497/103531769-5702de00-4ecd-11eb-9449-036b415b4585.png)
+![image](https://user-images.githubusercontent.com/52439497/103531769-5702de00-4ecd-11eb-9449-036b415b4585.png){: width="542" height="877.5"}
 
 #### 이벤트 상세 페이지
-![image](https://user-images.githubusercontent.com/52439497/103531747-4d797600-4ecd-11eb-96d7-a1ec68c37e9d.png)
+![image](https://user-images.githubusercontent.com/52439497/103531747-4d797600-4ecd-11eb-96d7-a1ec68c37e9d.png){: width="542" height="877.5"}
 
 #### 약품 목록 페이지
-![image](https://user-images.githubusercontent.com/52439497/103531785-5f5b1900-4ecd-11eb-82a9-682628de90c2.png)
+![image](https://user-images.githubusercontent.com/52439497/103531785-5f5b1900-4ecd-11eb-82a9-682628de90c2.png){: width="542" height="877.5"}
 
 #### 약품 상세 페이지
-![image](https://user-images.githubusercontent.com/52439497/103531790-641fcd00-4ecd-11eb-90b7-a90260a6d433.png)
+![image](https://user-images.githubusercontent.com/52439497/103531790-641fcd00-4ecd-11eb-90b7-a90260a6d433.png){: width="542" height="877.5"}
 
 #### 약관 등 설명 페이지
-![image](https://user-images.githubusercontent.com/52439497/103531790-641fcd00-4ecd-11eb-90b7-a90260a6d433.png)
+![image](https://user-images.githubusercontent.com/52439497/103531790-641fcd00-4ecd-11eb-90b7-a90260a6d433.png){: width="542" height="877.5"}
 
 
 

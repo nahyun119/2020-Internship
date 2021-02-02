@@ -3,25 +3,25 @@
 ### 200821 DoItPower 서버 검토 및 준비
 dotenv -> aws access key 나 비밀번호 계정 정보 등 팀원끼리 공유하지만 외부에 새어나가면 안되는 데이터를 .env 파일로 해서 보안해주면서 저장하는 도구        
 > Npm install로 설치하면 될 것 같다.        
-> Api 응답, 에러 처리할 때   
+- Api 응답, 에러 처리할 때   
 
 ![image](https://user-images.githubusercontent.com/52439497/90869453-32e9a900-e3d3-11ea-810d-11061a1ce6ed.png)
 
-> 이런 식으로 처리하면 좋을 것 같다. -팀장님 소스 참고     
+이런 식으로 처리하면 좋을 것 같다. -팀장님 소스 참고     
 
 ##### <정리>
 1. Error        
-> 에러 발생 시 생성되는 error code를 따로 빼서 정리하는게 좋을 것 같다. Err code  파일을 따로 만들어서 module.export하면 될 것 같다.       
-> error.stack -> 에러 발생 시 추적 정보를 담고 있다.         
-> Error Util은 에러가 발생하면 가져오고, 에러를 초기화 하는 코드, 특정 상황에 대한 에러를 에러 메세지를 포함하여 생성할 때 필요한 코드, 마지막으로 throw error해서 에러를 던진다.   
+ 에러 발생 시 생성되는 error code를 따로 빼서 정리하는게 좋을 것 같다. Err code  파일을 따로 만들어서 module.export하면 될 것 같다.       
+ error.stack -> 에러 발생 시 추적 정보를 담고 있다.         
+ Error Util은 에러가 발생하면 가져오고, 에러를 초기화 하는 코드, 특정 상황에 대한 에러를 에러 메세지를 포함하여 생성할 때 필요한 코드, 마지막으로 throw error해서 에러를 던진다.   
 
 2. hashUtil        
-> 비밀번호 잃어버렸을 시에 랜덤으로 비밀번호 만드는 코드 !!!         
-> Crypto 이용해서 진행하면 된다. randomBytes이용      
+ 비밀번호 잃어버렸을 시에 랜덤으로 비밀번호 만드는 코드 !!!         
+ Crypto 이용해서 진행하면 된다. randomBytes이용      
 
 3. Mysql         
-> 개발할 때 테스트 서버랑 실제 운영 서버를 다르게 해서 유지한다.        
-> -> 사용자의 아이피를 가져와서 아이피가 실제 운영하는 아이피 주소인지 아닌지를 확인하여 실제 서버인지 아닌지 체크해준다.        
+ 개발할 때 테스트 서버랑 실제 운영 서버를 다르게 해서 유지한다.        
+ -> 사용자의 아이피를 가져와서 아이피가 실제 운영하는 아이피 주소인지 아닌지를 확인하여 실제 서버인지 아닌지 체크해준다.        
 
 
 <pre>
@@ -53,10 +53,9 @@ query: async function (db_connection, query, params, resultCallback) {
 </pre>
 
 
-> 이렇게 해서 굳이 파라미터 수로 함수를 나눌 필요 없다.       
-> 또한 connection pool을 사용하는 경우,     
-> Try, catch 를 이용해서 진행하는데 getConnection할 때   
+이렇게 해서 굳이 파라미터 수로 함수를 나눌 필요 없다.      
 
+또한 connection pool을 사용하는 경우, Try, catch 를 이용해서 진행하는데 getConnection할 때   
 
 <pre>
 connectPool: function(asyncFunc, errorHandler){
@@ -100,53 +99,46 @@ connectPool: function(asyncFunc, errorHandler){
 </pre>
 
 
-> 이렇게 구현하고 asyncFunc을 내가 mysql을 connect해서 진행할 기능을 넣으면 된다.       
+이렇게 구현하고 asyncFunc을 내가 mysql을 connect해서 진행할 기능을 넣으면 된다.       
 
 4. nodeMailer       
-> 이 모듈을 이용해서 사용자에게 메일을 보낼 수 있다.       
+ 이 모듈을 이용해서 사용자에게 메일을 보낼 수 있다.       
 
 5. sendUtil         
-> Sendutil 을 따로 만들어서 메일을 보내든, 서버에 에러를 보내든 보내는 부분에 대한 기능을 따로 빼서 진행     
+ Sendutil 을 따로 만들어서 메일을 보내든, 서버에 에러를 보내든 보내는 부분에 대한 기능을 따로 빼서 진행     
 
 6. 로그인  
 
 ![image](https://user-images.githubusercontent.com/52439497/90869768-a8557980-e3d3-11ea-9ff5-df45f81f59e0.png)
 
-> 이런 식으로 로그인 사용자만 접근할 수 있는 api와 누구나 접근할 수 있는 api를 나누어서 api를 구성하는 것이 좋다.       
-> 그래서 private인 api는 중간에 middleware를 설정해서 사용자를 확인할 수 있도록 한다.       
-> app.all(‘/~ 이 부분에서 로그인을 확인할 수 있는 middleware를 설정한다.        
+ 이런 식으로 로그인 사용자만 접근할 수 있는 api와 누구나 접근할 수 있는 api를 나누어서 api를 구성하는 것이 좋다.       
+ 그래서 private인 api는 중간에 middleware를 설정해서 사용자를 확인할 수 있도록 한다.       
+ app.all(‘/~ 이 부분에서 로그인을 확인할 수 있는 middleware를 설정한다.        
 
 ##### <팁>
-1.  
-> 사용자가 사용하다가 버그가 발생하면 어떤 운영체제에서, 어떤 앱 버전에서 발생했는지 알아야 쉽게 버그를 고칠 수 있기때문에 user table에 app버전이랑 os를 표시하는 column을 추가하는 것이 좋다.        
-> 그리고 로그인 할 때마다 혹은 회원가입 할 때 사용자의 os와 앱 버전을 새로 수정하는 것이 좋다.        
+1. 사용자가 사용하다가 버그가 발생하면 어떤 운영체제에서, 어떤 앱 버전에서 발생했는지 알아야 쉽게 버그를 고칠 수 있기때문에 user table에 app버전이랑 os를 표시하는 column을 추가하는 것이 좋다.        
+ 그리고 로그인 할 때마다 혹은 회원가입 할 때 사용자의 os와 앱 버전을 새로 수정하는 것이 좋다.        
 
-2. 
-> nodemailer를 이용해서 서버에서 메일을 사용자에게 전송을 할 수 있는데, 이 때 에러가 발생한다.           
-> 대부분 에러는 보안 이슈 때문인데, 보내고자 하는 메일의 보안을 낮추면 메일을 서버에서 대신 전송할 수 있다.         
+2. nodemailer를 이용해서 서버에서 메일을 사용자에게 전송을 할 수 있는데, 이 때 에러가 발생한다.           
+ 대부분 에러는 보안 이슈 때문인데, 보내고자 하는 메일의 보안을 낮추면 메일을 서버에서 대신 전송할 수 있다.         
 
 3. 중요한 api를 전송하거나 그런 경우는 log를 따로 기록해놓는 것이 좋다.      
 
-4.       
-> Update 를 시작하기 전에 set sql_safe_updates = 0; 이 명령어를 진행해서 safe update mode를 끄는 것이 좋다.        
-> 그리고 update를 다하면 set sql_safe_updates = 1; 를 해서 원상복구 해야한다.        
+4. Update 를 시작하기 전에 set sql_safe_updates = 0; 이 명령어를 진행해서 safe update mode를 끄는 것이 좋다.        
+ 그리고 update를 다하면 set sql_safe_updates = 1; 를 해서 원상복구 해야한다.        
 
 5. Table 간 join! Inner join과 outer join이 존재한다.         
-> 여기서는 내가 참여하는 contest 목록을 가져올 때 contest member 테이블이랑 contest team 테이블과 각각 join해서 내 uid랑 맞는 contest를 가져온다.         
+ 여기서는 내가 참여하는 contest 목록을 가져올 때 contest member 테이블이랑 contest team 테이블과 각각 join해서 내 uid랑 맞는 contest를 가져온다.         
 
 6. Mysql ifnull(값, 대체할 값)         
 
-7. 
-> AWS S3에 사진을 올릴 때, 해당 파일의 mimetype.startWith 를 이용해서              
-> 이미지라면 ‘image/‘로 시작하는지, ‘audio/’ 이런 식으로 시작하는지를 통해 파일 유형을 알아낼 수 있다. => fileFilter 로 해서 multerOptions을 만들고 거기에 넣을 수 있다.       
-
+7. AWS S3에 사진을 올릴 때, 해당 파일의 mimetype.startWith 를 이용해서 이미지라면 ‘image/‘로 시작하는지, ‘audio/’ 이런 식으로 시작하는지를 통해 파일 유형을 알아낼 수 있다. => fileFilter 로 해서 multerOptions을 만들고 거기에 넣을 수 있다.        
 
 ![image](https://user-images.githubusercontent.com/52439497/90870008-f8ccd700-e3d3-11ea-8b66-c757051e7b89.png)
 
-8. 
-> Node에서 이미지 처리에 sharp 모듈이 유명           
-> 이미지 resize, 확장, 이미지 추출, 이미지 처리 등 이미지를 사용할 때 유용한 라이브러리이다.            
-> 특히 한 이미지에 대해서 썸네일 사진이 필요한 경우,  원본 이미지를 resize 시켜서 따로 섬네일 사진을 만드는 것이 좋다.        
+8. Node에서 이미지 처리에 sharp 모듈이 유명           
+ 이미지 resize, 확장, 이미지 추출, 이미지 처리 등 이미지를 사용할 때 유용한 라이브러리이다.            
+ 특히 한 이미지에 대해서 썸네일 사진이 필요한 경우,  원본 이미지를 resize 시켜서 따로 섬네일 사진을 만드는 것이 좋다.        
 
 
 ### 200824 DoItPower contest api 구현 시작
@@ -155,18 +147,18 @@ Contest 상세 페이지 가져올 때, db procedure를 보완하였다.
 
 ![image](https://user-images.githubusercontent.com/52439497/91280802-3f4e7700-e7c2-11ea-8bfc-1bb8a6d4325c.png)
 
-> Left join은 left outer join을 의미하는 것과 같다.       
+Left join은 left outer join을 의미하는 것과 같다.       
 
 ![image](https://user-images.githubusercontent.com/52439497/91280904-67d67100-e7c2-11ea-9b4b-9d3b70df45f0.png)
 
-> 이런 식으로 join의 결과가 등장한다.       
+이런 식으로 join의 결과가 등장한다.       
 
 ![image](https://user-images.githubusercontent.com/52439497/91280981-80df2200-e7c2-11ea-8591-f457b40daf4d.png)
 
-> 여러 개의 테이블에 대해서 join을 여러개 하고자 한다면, 이렇게 진행하면 된다.          
-> Contest  상세페이지에서 보여줄 상태를 보여주기 위해 db procedure이 아닌 db function을 만들어 구현해보았다.         
-> 또한 function을 만들때 다른 테이블에서 정보를 가져와야 하기 때문에  join에 대해 공부하고 구현해보았다.             
-> 또한 서버와 디비 측 오류를 수정하였다..          
+여러 개의 테이블에 대해서 join을 여러개 하고자 한다면, 이렇게 진행하면 된다.          
+Contest 상세페이지에서 보여줄 상태를 보여주기 위해 db procedure이 아닌 db function을 만들어 구현해보았다.         
+또한 function을 만들때 다른 테이블에서 정보를 가져와야 하기 때문에  join에 대해 공부하고 구현해보았다.             
+또한 서버와 디비 측 오류를 수정하였다.       
 
 
 ### 200825 대회 경우의 수 파악하고 상세 정보 및 참여 현황 db query 작성

@@ -1,6 +1,8 @@
-# DoItPower_Report
+# My Intern Record
 
-## iOS 화면 
+## DoItPower
+
+### iOS 화면 
 > Android 화면도 있으나, 화면 구성 및 내용이 매우 유사하여 iOS 화면을 대표적으로 사용한다. 
 
 

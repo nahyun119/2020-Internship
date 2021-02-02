@@ -1,5 +1,68 @@
 # DoItPower_Report
 
+## iOS 화면 
+> Android 화면도 있으나, 화면 구성 및 내용이 매우 유사하여 iOS 화면을 대표적으로 사용한다. 
+
+
+#### 1. 로그인 
+<img width="375" alt="스크린샷 2020-12-31 오전 11 14 14" src="https://user-images.githubusercontent.com/52439497/106553273-6a50aa00-655c-11eb-9d04-7bc4217df5be.png">
+
+#### 2-1. 홈화면(참여한 대회가 없는 경우)
+<img width="377" alt="스크린샷 2020-12-31 오전 11 16 00" src="https://user-images.githubusercontent.com/52439497/106553359-9cfaa280-655c-11eb-95e1-b8a7091b5db7.png">
+
+#### 2-2. 홈화면(참여한 대회가 있는 경우)
+<img width="377" alt="스크린샷 2020-12-31 오전 11 14 58" src="https://user-images.githubusercontent.com/52439497/106553409-b3086300-655c-11eb-8274-1eba778f94f4.png">
+
+#### 2-3. 홈화면(이벤트 팝업)
+<img width="377" alt="스크린샷 2020-12-31 오전 11 16 03" src="https://user-images.githubusercontent.com/52439497/106553455-c61b3300-655c-11eb-817d-0e97ae21c89a.png">
+
+#### 3. 대회 검색 
+<img width="375" alt="스크린샷 2020-12-31 오전 11 16 16" src="https://user-images.githubusercontent.com/52439497/106553519-e1863e00-655c-11eb-858b-f608316b3f6d.png">
+
+#### 4-1. 대회 상세(참여하지 않은 경우)
+<img width="375" alt="스크린샷 2020-12-31 오전 11 16 19" src="https://user-images.githubusercontent.com/52439497/106553546-ed720000-655c-11eb-8f9d-61dc00b54db3.png">
+
+#### 4-2. 대회 상세(참여했으나 진행 전인 경우)
+<img width="375" alt="스크린샷 2020-12-31 오전 11 16 51" src="https://user-images.githubusercontent.com/52439497/106553642-1c887180-655d-11eb-8631-9c5a11ac515c.png">
+
+#### 4-3. 대회 상세(참여하고 진행 중인 경우)
+<img width="376" alt="스크린샷 2020-12-31 오전 11 17 25" src="https://user-images.githubusercontent.com/52439497/106553739-50639700-655d-11eb-8a51-44590274e7b0.png">
+
+#### 4-4. 대회 상세(인원 미달)
+<img width="375" alt="스크린샷 2020-12-31 오전 11 17 13" src="https://user-images.githubusercontent.com/52439497/106553675-2f9b4180-655d-11eb-944f-afbb9a00de87.png">
+
+#### 4-5. 대회 상세(팀원 미달)
+<img width="376" alt="스크린샷 2020-12-31 오전 11 18 17" src="https://user-images.githubusercontent.com/52439497/106553913-b2bc9780-655d-11eb-94ce-eb03545be99b.png">
+
+#### 5. 인증하기
+<img width="376" alt="스크린샷 2020-12-31 오전 11 17 33" src="https://user-images.githubusercontent.com/52439497/106553769-607b7680-655d-11eb-837d-741c4494839e.png">
+<img width="376" alt="스크린샷 2020-12-31 오전 11 17 36" src="https://user-images.githubusercontent.com/52439497/106553773-62ddd080-655d-11eb-9cfd-db04ecb79895.png">
+
+#### 6-1. 참여 현황(개인전)
+<img width="376" alt="스크린샷 2020-12-31 오전 11 17 45" src="https://user-images.githubusercontent.com/52439497/106553802-78eb9100-655d-11eb-80ae-9508ade466df.png">
+
+#### 6-2. 참여 현황(팀전)
+<img width="376" alt="스크린샷 2020-12-31 오전 11 18 41" src="https://user-images.githubusercontent.com/52439497/106553964-cec03900-655d-11eb-9c35-31aee200ffb3.png">
+
+#### 7. 참여자 인증 목록
+<img width="376" alt="스크린샷 2020-12-31 오전 11 17 47" src="https://user-images.githubusercontent.com/52439497/106553834-8c96f780-655d-11eb-8c16-2ad60960a95d.png">
+
+#### 7-1. 날짜별 인증 목록
+<img width="376" alt="스크린샷 2020-12-31 오전 11 18 59" src="https://user-images.githubusercontent.com/52439497/106554078-0202c800-655e-11eb-87f7-e63e4cc74218.png">
+
+#### 7-2. 이의제기 
+<img width="376" alt="스크린샷 2020-12-31 오전 11 18 03" src="https://user-images.githubusercontent.com/52439497/106553861-9de00400-655d-11eb-84a7-5f2f93ea5039.png">
+<img width="376" alt="스크린샷 2020-12-31 오전 11 18 10" src="https://user-images.githubusercontent.com/52439497/106553863-9f113100-655d-11eb-96ea-a6d6a868e4dd.png">
+
+#### 8. 사용자 프로필
+<img width="374" alt="스크린샷 2020-12-31 오전 11 19 10" src="https://user-images.githubusercontent.com/52439497/106554113-12b33e00-655e-11eb-9239-16fd9c23f5d4.png">
+
+#### 8-1. 사용자 포인트 내역 
+<img width="375" alt="스크린샷 2020-12-31 오전 11 20 00" src="https://user-images.githubusercontent.com/52439497/106554149-2199f080-655e-11eb-965a-8616655dd3a9.png">
+
+#### 9. 결제 
+<img width="375" alt="스크린샷 2020-12-31 오전 11 20 05" src="https://user-images.githubusercontent.com/52439497/106554157-278fd180-655e-11eb-83ca-ed23379d151d.png">
+
 ### 200821 DoItPower 서버 검토 및 준비
 dotenv -> aws access key 나 비밀번호 계정 정보 등 팀원끼리 공유하지만 외부에 새어나가면 안되는 데이터를 .env 파일로 해서 보안해주면서 저장하는 도구        
 > Npm install로 설치하면 될 것 같다.        

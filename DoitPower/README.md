@@ -2,9 +2,11 @@
 
 ### 200821 DoItPower 서버 검토 및 준비
 dotenv -> aws access key 나 비밀번호 계정 정보 등 팀원끼리 공유하지만 외부에 새어나가면 안되는 데이터를 .env 파일로 해서 보안해주면서 저장하는 도구        
-> Npm install로 설치하면 될 것 같다.       
-Api 응답, 에러 처리할 때       
+> Npm install로 설치하면 될 것 같다.        
+> Api 응답, 에러 처리할 때   
+
 ![image](https://user-images.githubusercontent.com/52439497/90869453-32e9a900-e3d3-11ea-810d-11061a1ce6ed.png)
+
 > 이런 식으로 처리하면 좋을 것 같다. -팀장님 소스 참고     
 
 ##### <정리>
@@ -19,7 +21,8 @@ Api 응답, 에러 처리할 때
 
 3. Mysql         
 > 개발할 때 테스트 서버랑 실제 운영 서버를 다르게 해서 유지한다.        
-> -> 사용자의 아이피를 가져와서 아이피가 실제 운영하는 아이피 주소인지 아닌지를 확인하여 실제 서버인지 아닌지 체크해준다.      
+> -> 사용자의 아이피를 가져와서 아이피가 실제 운영하는 아이피 주소인지 아닌지를 확인하여 실제 서버인지 아닌지 체크해준다.        
+
 
 <pre>
 query: async function (db_connection, query, params, resultCallback) {
@@ -49,9 +52,12 @@ query: async function (db_connection, query, params, resultCallback) {
     }
 </pre>
 
+
 > 이렇게 해서 굳이 파라미터 수로 함수를 나눌 필요 없다.       
 > 또한 connection pool을 사용하는 경우,     
-> Try, catch 를 이용해서 진행하는데 getConnection할 때       
+> Try, catch 를 이용해서 진행하는데 getConnection할 때   
+
+
 <pre>
 connectPool: function(asyncFunc, errorHandler){
     pool.getConnection(async function (err, connection) {
@@ -92,7 +98,9 @@ connectPool: function(asyncFunc, errorHandler){
     });
 },
 </pre>
-> 이렇게 구현하고 asyncFunc을 내가 mysql을 connect해서 진행할 기능을 넣으면 된다.      
+
+
+> 이렇게 구현하고 asyncFunc을 내가 mysql을 connect해서 진행할 기능을 넣으면 된다.       
 
 4. nodeMailer       
 > 이 모듈을 이용해서 사용자에게 메일을 보낼 수 있다.       
@@ -101,6 +109,7 @@ connectPool: function(asyncFunc, errorHandler){
 > Sendutil 을 따로 만들어서 메일을 보내든, 서버에 에러를 보내든 보내는 부분에 대한 기능을 따로 빼서 진행     
 
 6. 로그인  
+
 ![image](https://user-images.githubusercontent.com/52439497/90869768-a8557980-e3d3-11ea-9ff5-df45f81f59e0.png)
 
 > 이런 식으로 로그인 사용자만 접근할 수 있는 api와 누구나 접근할 수 있는 api를 나누어서 api를 구성하는 것이 좋다.       
@@ -130,6 +139,8 @@ connectPool: function(asyncFunc, errorHandler){
 7. 
 > AWS S3에 사진을 올릴 때, 해당 파일의 mimetype.startWith 를 이용해서              
 > 이미지라면 ‘image/‘로 시작하는지, ‘audio/’ 이런 식으로 시작하는지를 통해 파일 유형을 알아낼 수 있다. => fileFilter 로 해서 multerOptions을 만들고 거기에 넣을 수 있다.       
+
+
 ![image](https://user-images.githubusercontent.com/52439497/90870008-f8ccd700-e3d3-11ea-8b66-c757051e7b89.png)
 
 8. 
@@ -143,12 +154,15 @@ Contest 상세 페이지 가져올 때, db procedure를 보완하였다.
 > contest_detail 작성      
 
 ![image](https://user-images.githubusercontent.com/52439497/91280802-3f4e7700-e7c2-11ea-8bfc-1bb8a6d4325c.png)
+
 > Left join은 left outer join을 의미하는 것과 같다.       
 
 ![image](https://user-images.githubusercontent.com/52439497/91280904-67d67100-e7c2-11ea-9b4b-9d3b70df45f0.png)
+
 > 이런 식으로 join의 결과가 등장한다.       
 
 ![image](https://user-images.githubusercontent.com/52439497/91280981-80df2200-e7c2-11ea-8591-f457b40daf4d.png)
+
 > 여러 개의 테이블에 대해서 join을 여러개 하고자 한다면, 이렇게 진행하면 된다.          
 > Contest  상세페이지에서 보여줄 상태를 보여주기 위해 db procedure이 아닌 db function을 만들어 구현해보았다.         
 > 또한 function을 만들때 다른 테이블에서 정보를 가져와야 하기 때문에  join에 대해 공부하고 구현해보았다.             
